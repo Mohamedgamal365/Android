@@ -1,0 +1,732 @@
+// Hint: Include 3 XML & 7 Java
+--------------------------------
+XML: 
+activity_main.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dreamwalker"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/First"
+        style="@style/StyleForAll"
+        android:text="ÃÐßÇÑ ÇáÕÈÇÍ" />
+
+
+    <TextView
+        android:id="@+id/Second"
+        style="@style/StyleForAll"
+        android:text="ÃÐßÇÑ ÇáãÓÇÁ" />
+
+    <TextView
+        android:id="@+id/Third"
+        style="@style/StyleForAll"
+        android:text="ÃÍÇÏíË Úä ÇáÑÓæá (Õ)" />
+
+    <TextView
+        android:id="@+id/Fourth"
+        style="@style/StyleForAll"
+        android:text="ãÚáæãÇÊ Úä ãäÝÐ ÇáÈÑäÇãÌ" />
+
+</LinearLayout>
+
+--------------------------------------------------------------------------------------------------------------------------
+forlistview.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+-ListView allows with ArrayList & ArrayAdapter
+-To Make List Of Item
+- Less Memory than LinearLayout
+-->
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/dreamwalker">
+
+</ListView>
+
+--------------------------------------------------------------------------------------------------------------------------
+foralltext.xml:
+
+<?xml version="1.0" encoding="utf-8"?><!--
+-Nested to allows Horizontal & Virtecal
+-Change Texts & Image all the time by ArrayAdapter
+Each time this elements have own atrributes so don't need to add backgroud if it not like together [e.g: Color]
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="50dp"
+    android:padding="5dp">
+
+
+    <ImageView
+        android:id="@+id/image_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>
+
+--------------------------------------------------------------------------------------------------------------------------
+Java:
+
+package com.example.android.azkar;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        TextView first = (TextView) findViewById(R.id.First);
+        first.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent press = new Intent(MainActivity.this, AzkarElSbah.class);
+                startActivity(press);
+            }
+        });
+        TextView second = (TextView) findViewById(R.id.Second);
+        second.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent press = new Intent(MainActivity.this, AzkarElMsaa.class);
+                startActivity(press);
+            }
+        });
+        TextView third = (TextView) findViewById(R.id.Third);
+        third.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent press = new Intent(MainActivity.this, Ahadeeth.class);
+                startActivity(press);
+            }
+        });
+        TextView fourth = (TextView) findViewById(R.id.Fourth);
+        fourth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent press = new Intent(MainActivity.this, Informations.class);
+                startActivity(press);
+            }
+        });
+    }
+}
+
+
+--------------------------------------------------------------------------------------------------------------------------
+AzkarElSbah.java:
+
+package com.example.android.azkar;
+
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class AzkarElSbah extends AppCompatActivity {
+    /**
+     * To Add New Folder Called [raw] in res Folder
+     * RightClick On res > new > Android resource directory
+     * MediaPlayer Allows the audio
+     */
+    private MediaPlayer mediaPlayer;
+    /**
+     * OnCompletionListener do thing after thing is completed [e.g: Hold the second thing until first thing is completed]
+     * Whe you type [new MediaPlayer.OnCompletionListener()] the Override will type Auto
+     * Used to Call onStop() Method
+     */
+    private MediaPlayer.OnCompletionListener completion = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            onStop();
+        }
+    };
+    // Create audio global of Word Class to use it in ReleaseAudio() method
+    Word audio;
+    //Make changeImage global to use it in ReleaseAudio() method
+    ImageView changeImage;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Don't forget to allow this activity with File.xml has [ListView] not [activity_main.xml]
+        setContentView(R.layout.forlistview);
+/**
+ * In this case.. ArrayList Allows the Word class
+ * Use [x.add] to add items by adding new constructor of Word every time
+ * When you need to add image.. Add it by own Address or ID [e.g: R.drawable.numbers3] it will return [int] & take less size of  memory
+ * imageId = 0 > when no image will be added
+ * When you need to add audio.. Add it by own Address or ID [e.g: R.raw.music] it will return [int] & take less size of  memory
+ * final > To use words into OnItemClickListener
+ */
+        final ArrayList<Word> words = new ArrayList<Word>();
+        words.add(new Word("3 ãÑÇÊ", "Þõáú åõæó ?ááøóåõ ÃóÍóÏñ¡ ?ááøóåõ ?áÕøóãóÏõ¡ áóãú íóáöÏú æóáóãú íõæáóÏú¡ æóáóãú íóßõä áøóåõ? ßõÝõæðÇ ÃóÍóÏñ?", R.drawable.play_circle, R.raw.soret_elekhlas));
+        words.add(new Word("3 ãÑÇÊ", "Þõáú ÃóÚõæÐõ ÈöÑóÈøö ?áúÝóáóÞö¡ ãöä ÔóÑøö ãóÇ ÎóáóÞó¡ æóãöä ÔóÑøö ÛóÇÓöÞò ÅöÐóÇ æóÞóÈó¡ æóãöä ÔóÑøö ?áäøóÝøó?Ëó?Êö Ýöì ?áúÚõÞóÏö¡ æóãöä ÔóÑøö ÍóÇÓöÏò ÅöÐóÇ ÍóÓóÏó", R.drawable.play_circle, R.raw.soret_elflaq));
+        words.add(new Word("3 ãÑÇÊ", "Þõáú ÃóÚõæÐõ ÈöÑóÈøö ?áäøóÇÓö¡ ãóáößö ?áäøóÇÓö¡ Åöáó?åö ?áäøóÇÓö¡ ãöä ÔóÑøö ?áúæóÓúæóÇÓö ?áúÎóäøóÇÓö¡ ?áøóÐöì íõæóÓúæöÓõ Ýöì ÕõÏõæÑö ?áäøóÇÓö¡ ãöäó ?áúÌöäøóÉö æó?áäøóÇÓöñ?", R.drawable.play_circle, R.raw.soret_elnas));
+        words.add(new Word("ãÑå æÇÍÏå", "Çááøåõ áÇó ÅöáóÜåó ÅöáÇøó åõæó ÇáúÍóíøõ ÇáúÞóíøõæãõ áÇó ÊóÃúÎõÐõåõ ÓöäóÉñ æóáÇó äóæúãñ áøóåõ ãóÇ Ýöí ÇáÓøóãóÇæóÇÊö æóãóÇ Ýöí ÇáÃóÑúÖö ãóä ÐóÇ ÇáøóÐöí íóÔúÝóÚõ ÚöäúÏóåõ ÅöáÇøó ÈöÅöÐúäöåö íóÚúáóãõ ãóÇ Èóíúäó ÃóíúÏöíåöãú æóãóÇ ÎóáúÝóåõãú æóáÇó íõÍöíØõæäó ÈöÔóíúÁò ãøöäú Úöáúãöåö ÅöáÇøó ÈöãóÇ ÔóÇÁ æóÓöÚó ßõÑúÓöíøõåõ ÇáÓøóãóÇæóÇÊö æóÇáÃóÑúÖó æóáÇó íóÄõæÏõåõ ÍöÝúÙõåõãóÇ æóåõæó ÇáúÚóáöíøõ ÇáúÚóÙöíãõ. ", R.drawable.play_circle, R.raw.soret_elkorsy));
+        words.add(new Word("3 ãÑÇÊ", "ÑóÖíÜÊõ ÈöÇááåö ÑóÈøóÜÇð æóÈöÇáÅÓúáÇãö ÏíÜäÇð æóÈöãõÍóÜãøóÏò Õáì Çááå Úáíå æÓáã äóÈöíøÜÇð", R.drawable.play_circle, R.raw.radet_bellah));
+        words.add(new Word("ãÑå æÇÍÏå", "Çááóøåõãóø ÅöäóøÇ äóÚõæÐõ Èößó ãöäú Ãóäú äõÔúÑößó Èößó ÔóíúÆðÇ äóÚúáóãõåõ ¡ æóäóÓúÊóÛúÝöÑõßó áöãóÇ áóÇ äóÚúáóãõåõñ?", R.drawable.play_circle, R.raw.allahom_ena_naaoz_bk));
+
+/**
+ * Call the WordAdapter class that extends from ArrayAdapter to allows you to use getView method
+ * WordAdapter Construtor Has Two Parameters
+ * @param this As This Activity
+ * @param words Pass the ArrayList
+ */
+        WordAdapter adapter = new WordAdapter(this, words);
+
+        // Get the ListView by Id
+        ListView listView = (ListView) findViewById(R.id.list);
+/**
+ * When click on items in the list.. will start the audio
+ * When You write [new AdapterView.OnItemClickListener()] the Override method will created Auto
+ * MediaPlayer.create Has Two Parameters
+ * @param context > [e.g: AzkarElSbah.this] This Activity
+ * @param The method From Word Class to get the audio by using words to get item by position
+ */
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /**
+                 * Toast Show message on screen when item is clicked & (position +1) because position starts from 0 & [It's Optional]
+                 * Has Three Parameters
+                 * @param context > [e.g: AzkarElSbah.this] This Activity
+                 * @param Text> Show Text and can get position of items by  [+ Position ]
+                 * @param Toast.LENGTH_SHORT [Still on screen 2 sec]  Or Toast.LENGTH_LONG [Still on screen 3.5 sec]
+                 */
+                Toast.makeText(AzkarElSbah.this, "Clicked on item " + (position + 1), Toast.LENGTH_SHORT).show();
+                //Use the global audio of Word Class to get audios by own position from ArrayList
+                audio = words.get(position);
+                //Get ImageView by ID to change it between play & pause [It's play in the first time]
+                //Use view from [Method > onItemClick > view parameter]
+                changeImage = (ImageView) view.findViewById(R.id.image_icon);
+                //Call This Method Before Create The mediaPlayer For Audio
+                ReleaseAudio();
+                //If it not null start audio & setOnCompletionListener by global var [completion]
+                //If it null do nothing better than get error
+                if (mediaPlayer != null) {
+                    //Start the current audio
+                    mediaPlayer.start();
+                    mediaPlayer.setOnCompletionListener(completion);
+                    //Change Image from play to pause when the audio is playing
+                    changeImage.setImageResource(R.drawable.pause_circle);
+
+                }
+            }
+        });
+        // Use setAdapter to send the list of items to the ListView to display it
+        listView.setAdapter(adapter);
+    }
+
+    private void ReleaseAudio() {
+        //Before creating mediaPlayer Check if it null or not
+        //First time only will return false cause it will be null
+        //If it not null >> Stop the current audio and make mediaPlayer = null
+        if (mediaPlayer != null) {
+            //Stop the current audio
+            mediaPlayer.release();
+            mediaPlayer = null;
+            //Change Image from pause to play when the audio is stopped
+            changeImage.setImageResource(R.drawable.play_circle);
+        } else {
+            //Create new mediaPlayer to be current audio
+            mediaPlayer = MediaPlayer.create(AzkarElSbah.this, audio.getAudioResourceId());
+        }
+    }
+
+
+    //Override Method to stop audio when the user out of the Activity or press again on the same item
+    @Override
+    protected void onStop() {
+        //It's Extends from Super Class
+        Toast.makeText(AzkarElSbah.this, "Closed", Toast.LENGTH_SHORT).show();
+        super.onStop();
+        //Call method To make mediaPlayer = null .. Because we don't need audio anymore
+        ReleaseAudio();
+    }
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+AzkarElMsaa.java:
+
+package com.example.android.azkar;
+
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class AzkarElMsaa extends AppCompatActivity {
+    /**
+     * To Add New Folder Called [raw] in res Folder
+     * RightClick On res > new > Android resource directory
+     * MediaPlayer Allows the audio
+     */
+    private MediaPlayer mediaPlayer;
+    /**
+     * OnCompletionListener do thing after thing is completed [e.g: Hold the second thing until first thing is completed]
+     * Whe you type [new MediaPlayer.OnCompletionListener()] the Override will type Auto
+     * Used to Call onStop() Method
+     */
+    private MediaPlayer.OnCompletionListener completion = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            onStop();
+        }
+    };
+    // Create audio global of Word Class to use it in ReleaseAudio() method
+    Word audio;
+    //Make changeImage global to use it in ReleaseAudio() method
+    ImageView changeImage;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Don't forget to allow this activity with File.xml has [ListView] not [activity_main.xml]
+        setContentView(R.layout.forlistview);
+/**
+ * In this case.. ArrayList Allows the Word class
+ * Use [x.add] to add items by adding new constructor of Word every time
+ * When you need to add image.. Add it by own Address or ID [e.g: R.drawable.numbers3] it will return [int] & take less size of  memory
+ * imageId = 0 > when no image will be added
+ * When you need to add audio.. Add it by own Address or ID [e.g: R.raw.music] it will return [int] & take less size of  memory
+ * final > To use words into OnItemClickListener
+ */
+        final ArrayList<Word> words = new ArrayList<Word>();
+        words.add(new Word("ãÑå æÇÍÏå", "Çááóøåõãóø ÅöäóøÇ äóÚõæÐõ Èößó ãöäú Ãóäú äõÔúÑößó Èößó ÔóíúÆðÇ äóÚúáóãõåõ ¡ æóäóÓúÊóÛúÝöÑõßó áöãóÇ áóÇ äóÚúáóãõåõñ?", R.drawable.play_circle, R.raw.allahom_ena_naaoz_bk));
+        words.add(new Word("3 ãÑÇÊ", "ÑóÖíÜÊõ ÈöÇááåö ÑóÈøóÜÇð æóÈöÇáÅÓúáÇãö ÏíÜäÇð æóÈöãõÍóÜãøóÏò Õáì Çááå Úáíå æÓáã äóÈöíøÜÇð", R.drawable.play_circle, R.raw.radet_bellah));
+        words.add(new Word("ãÑå æÇÍÏå", "Çááåõãøó Åöäøöí ÃóÚõæÐõ Èößó ãöäó ÇáúßõÝúÑö æóÇáúÝóÞúÑö¡ Çááåõãøó Åöäøöí ÃóÚõæÐõ Èößó ãöäú ÚóÐóÇÈö ÇáúÞóÈúÑö¡ áÇó Åöáóåó ÅöáÇøó ÃóäúÊó", R.drawable.play_circle, R.raw.allahom_eny_aaoz_bk_mn_alkofr));
+        words.add(new Word("ãÑå æÇÍÏå", "íóÇ ÑóÈøö , áóßó ÇáúÍóãúÏõ ßóãóÇ íóäúÈóÛöí áöÌóáóÇáö æóÌúåößó , æóáöÚóÙöíãö ÓõáúØóÇäößó", R.drawable.play_circle, R.raw.yarb_lk_alhamd));
+        words.add(new Word("ãÑå æÇÍÏå", "Çááøóåõãøó Åöäøöí ÃóÚõæÐõ Èößó ãöäú Çáúåóãøö æóÇáúÍóÒóäö æóÃóÚõæÐõ Èößó ãöäú ÇáúÚóÌúÒö æóÇáúßóÓóáö æóÃóÚõæÐõ Èößó ãöäú ÇáúÌõÈúäö æóÇáúÈõÎúáö æóÃóÚõæÐõ Èößó ãöäú ÛóáóÈóÉö ÇáÏøóíúäö æóÞóåúÑö ÇáÑøöÌóÇáöóð", R.drawable.play_circle, R.raw.allahom_eny_aaoz_bk_mn_alham));
+        words.add(new Word("ãÑå æÇÍÏå", "ÃÃóãúÓóíúäóÇ Úóáóì ÝöØúÑóÉö ÇáÅÓúáÇóãö¡ æóÚóáóì ßóáöãóÉö ÇáÅöÎúáÇóÕö¡ æóÚóáóì Ïöíäö äóÈöíøöäóÇ ãõÍóãøóÏò Õóáøóì Çááåõ Úóáóíúåö æóÓóáøóãó¡ æóÚóáóì ãöáøóÉö ÃóÈöíäóÇ ÅÈúÑóÇåöíãó ÍóäöíÝÇð ãõÓúáöãÇð æóãóÇ ßóÇäó ãöäó ÇáãõÔúÑößöíäó", R.drawable.play_circle, R.raw.amsena_ala_fetret_aleslam));
+
+/**
+ * Call the WordAdapter class that extends from ArrayAdapter to allows you to use getView method
+ * WordAdapter Construtor Has Two Parameters
+ * @param this As This Activity
+ * @param words Pass the ArrayList
+ */
+
+        WordAdapter adapter = new WordAdapter(this, words);
+
+        // Get the ListView by Id
+        ListView listView = (ListView) findViewById(R.id.list);
+/**
+ * When click on items in the list.. will start the audio
+ * When You write [new AdapterView.OnItemClickListener()] the Override method will created Auto
+ * MediaPlayer.create Has Two Parameters
+ * @param context > [e.g: AzkarElMsaa.this] This Activity
+ * @param The method From Word Class to get the audio by using words to get item by position
+ */
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /**
+                 * Toast Show message on screen when item is clicked & (position +1) because position starts from 0 & [It's Optional]
+                 * Has Three Parameters
+                 * @param context > [e.g: AzkarElMsaa.this] This Activity
+                 * @param Text> Show Text and can get position of items by  [+ Position ]
+                 * @param Toast.LENGTH_SHORT [Still on screen 2 sec]  Or Toast.LENGTH_LONG [Still on screen 3.5 sec]
+                 */
+                Toast.makeText(AzkarElMsaa.this, "Clicked on item " + (position + 1), Toast.LENGTH_SHORT).show();
+                //Use the global audio of Word Class to get audios by own position from ArrayList
+                audio = words.get(position);
+                //Get ImageView by ID to change it between play & pause [It's play in the first time]
+                //Use view from [Method > onItemClick > view parameter]
+                changeImage = (ImageView) view.findViewById(R.id.image_icon);
+                //Call This Method Before Create The mediaPlayer For Audio
+                ReleaseAudio();
+                //If it not null start audio & setOnCompletionListener by global var [completion]
+                //If it null do nothing better than get error
+                if (mediaPlayer != null) {
+                    //Start the current audio
+                    mediaPlayer.start();
+                    mediaPlayer.setOnCompletionListener(completion);
+                    //Change Image from play to pause when the audio is playing
+                    changeImage.setImageResource(R.drawable.pause_circle);
+                }
+            }
+        });
+        // Use setAdapter to send the list of items to the ListView to display it
+        listView.setAdapter(adapter);
+    }
+
+    private void ReleaseAudio() {
+        //Before creating mediaPlayer Check if it null or not
+        //First time only will return false cause it will be null
+        //If it not null >> Stop the current audio and make mediaPlayer = null
+        if (mediaPlayer != null) {
+            //Stop the current audio
+            mediaPlayer.release();
+            mediaPlayer = null;
+            //Change Image from pause to play when the audio is stopped
+            changeImage.setImageResource(R.drawable.play_circle);
+        } else {
+            //Create new mediaPlayer to be current audio
+            mediaPlayer = MediaPlayer.create(AzkarElMsaa.this, audio.getAudioResourceId());
+
+        }
+    }
+
+
+    //Override Method to stop audio when the user out of the Activity or press again on the same item
+    @Override
+    protected void onStop() {
+        //It's Extends from Super Class
+        Toast.makeText(AzkarElMsaa.this, "Closed", Toast.LENGTH_SHORT).show();
+        super.onStop();
+        //Call method To make mediaPlayer = null .. Because we don't need audio anymore
+        ReleaseAudio();
+    }
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+Ahadeeth.java:
+
+package com.example.android.azkar;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class Ahadeeth extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Don't forget to allow this activity with File.xml has [ListView] not [activity_main.xml]
+        setContentView(R.layout.forlistview);
+/**
+ * In this case.. ArrayList Allows the Word class
+ * Use [x.add] to add items by adding new constructor of Word every time
+ * When you need to add image.. Add it by own Address or ID [e.g: R.drawable.numbers3] it will return [int] & take less size of  memory
+ * imageId = 0 > when no image will be added
+ * When you need to add audio.. Add it by own Address or ID [e.g: R.raw.music] it will return [int] & take less size of  memory
+ * In this case no need to add audio
+ * final > To use words into OnItemClickListener
+ */
+        final ArrayList<Word> words = new ArrayList<Word>();
+        words.add(new Word("ÞÇá ÑÓæá Çááå Õáí Çááå Úáíå æ Óáã:", "ÃÊÇäí ÌÈÑíá Ü Úáíå ÇáÓáÇã Ü ãä ÚäÏ Çááå ÊÈÇÑß æÊÚÇáì¡ ÝÞÇá: íÇ ãÍãÏ Åä Çááå ÚÒ æÌá ÞÇá áß: Åäí ÞÏ ÝÑÖÊ Úáì ÃãÊß ÎãÓ ÕáæÇÊ¡ ãä æÇÝÇåä Úáì æÖæÆåä æãæÇÞíÊåä¡ æÓÌæÏåä¡ ÝÅä áå ÚäÏí Èåä ÚåÏ Ãä ÃÏÎáå Èåä ÇáÌäÉ¡ æãä áÞíäí ÞÏ ÇäÞÕ ãä Ðáß ÔíÆÇ Ü Ãæ ßáãÉ ÊÔÈååÇ Ü ÝáíÓ áå ÚäÏí ÚåÏ¡ Åä ÔÆÊ ÚÐÈÊå¡ æÅä ÔÆÊ ÑÍãÊå", R.drawable.mohamed_rasol_allah));
+        words.add(new Word("ÞÇá ÑÓæá Çááå Õáí Çááå Úáíå æ Óáã:", "ÅÐÇ ÇÈÊáì Çááå ÇáÚÈÏ ÇáãÓáã ÈÈáÇÁ Ýí ÌÓÏå¡ ÞÇá Çááå: ÇßÊÈ áå Úãáå ÇáÕÇáÍ ÇáÐí ßÇä íÚãáå¡ ÝÅä ÔÝÇå ÛÓáå æØåÑå æÅä ÞÈÖå ÛÝÑ áå æÑÍãåó", R.drawable.mohamed_rasol_allah));
+        words.add(new Word("ÞÇá ÑÓæá Çááå Õáí Çááå Úáíå æ Óáã:", "ÅÐÇ ÏÎá Ãåá ÇáÌäÉ ÇáÌäÉ¡ ÞÇá Çááå Ìá æÚáÇ: ÃÊÔÊåæä ÔíÆÇð¿ ÞÇáæÇ: ÑÈäÇ æãÇ ÝæÞ ãÇ ÃÚØíÊäÇ¿ ÝíÞæá: Èá ÑÖÇí ÇßÈÑöñ?", R.drawable.mohamed_rasol_allah));
+        words.add(new Word("ÞÇá ÑÓæá Çááå Õáí Çááå Úáíå æ Óáã: ", "ÞÇá Çááå ÊÚÇáì: ÃÚÏÏÊ áÚÈÇÏí ÇáÕÇáÍíä ãÇ áÇ Úíä ÑÃÊ æáÇ ÃÐä ÓãÚÊ æáÇ ÎØÑ Úáì ÞáÈ ÈÔÑ ", R.drawable.mohamed_rasol_allah));
+        words.add(new Word(" ÞÇá ÑÓæá Çááå Õáí Çááå Úáíå æ Óáã:", "ÞÇá Çááå ÊÚÇáì: ÃäÇ ÚäÏ Ùä ÚÈÏí Èí ÝáíÙä Èí ãÇ ÔÇÁÇð", R.drawable.mohamed_rasol_allah));
+        words.add(new Word("ÞÇá ÑÓæá Çááå Õáí Çááå Úáíå æ Óáã: ", "Åä Çááå ÊÚÇáì íÞæá: íÇ ÇÈä ÂÏã ÊÝÑÛ áÚÈÇÏÊí ÃãáÃ ÕÏÑß Ûäì æÃÓÏ ÝÞÑß æÅä áã ÊÝÚá ãáÃÊ íÏíß ÔÛáÇð æáã ÃÓÏ ÝÞÑß", R.drawable.mohamed_rasol_allah));
+
+/**
+ * Call the WordAdapter class that extends from ArrayAdapter to allows you to use getView method
+ * WordAdapter Construtor Has Two Parameters
+ * @param this As This Activity
+ * @param words Pass the ArrayList
+ */
+
+        WordAdapter adapter = new WordAdapter(this, words);
+
+        // Get the ListView by Id
+        ListView listView = (ListView) findViewById(R.id.list);
+/**
+ * When click on items in the list.. will start the audio
+ * When You write [new AdapterView.OnItemClickListener()] the Override method will created Auto
+ * MediaPlayer.create Has Two Parameters
+ * @param context > [e.g: Ahadeeth.this] This Activity
+ * @param The method From Word Class to get the audio by using words to get item by position
+ */
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /**
+                 * Toast Show message on screen when item is clicked & (position +1) because position starts from 0 & [It's Optional]
+                 * Has Three Parameters
+                 * @param context > [e.g: Ahadeeth.this] This Activity
+                 * @param Text> Show Text and can get position of items by  [+ Position ]
+                 * @param Toast.LENGTH_SHORT [Still on screen 2 sec]  Or Toast.LENGTH_LONG [Still on screen 3.5 sec]
+                 */
+                Toast.makeText(Ahadeeth.this, "No Audio ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Use setAdapter to send the list of items to the ListView to display it
+        listView.setAdapter(adapter);
+    }
+
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+Informations.java:
+
+package com.example.android.azkar;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class Informations extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Don't forget to allow this activity with File.xml has [ListView] not [activity_main.xml]
+        setContentView(R.layout.forlistview);
+/**
+ * In this case.. ArrayList Allows the Word class
+ * Use [x.add] to add items by adding new constructor of Word every time
+ * When you need to add image.. Add it by own Address or ID [e.g: R.drawable.numbers3] it will return [int] & take less size of  memory
+ * imageId = 0 > when no image will be added
+ * When you need to add audio.. Add it by own Address or ID [e.g: R.raw.music] it will return [int] & take less size of  memory
+ * In this case no need to add audio
+ * final > To use words into OnItemClickListener
+ */
+        final ArrayList<Word> words = new ArrayList<Word>();
+        words.add(new Word("ÏÇæãæÇ", "Úáìð", R.drawable.numbers1));
+        words.add(new Word("ÇáÃÐßÇÑ", "ÝÃäåÇ ÊäÝÚ ÇáãÄãä", R.drawable.numbers2));
+        words.add(new Word("æ åÐÇ ãä", "ÝÖáñ?", R.drawable.numbers3));
+        words.add(new Word("ÑÈí", "Úáíøó", R.drawable.numbers4));
+        words.add(new Word("ÝÞØ", "áÇöñ?", R.drawable.numbers5));
+        words.add(new Word("ÊäÓæäí", "ÈÇáÏÚÇÁ ", R.drawable.numbers6));
+        words.add(new Word("ãäÝÐ", "ÇáÈÑäÇãÌ ", R.drawable.numbers7));
+        words.add(new Word("ãÍãÏ", "ÌãÇá ", R.drawable.numbers8));
+
+/**
+ * Call the WordAdapter class that extends from ArrayAdapter to allows you to use getView method
+ * WordAdapter Construtor Has Two Parameters
+ * @param this As This Activity
+ * @param words Pass the ArrayList
+ */
+
+        WordAdapter adapter = new WordAdapter(this, words);
+
+        // Get the ListView by Id
+        ListView listView = (ListView) findViewById(R.id.list);
+/**
+ * When click on items in the list.. will start the audio
+ * When You write [new AdapterView.OnItemClickListener()] the Override method will created Auto
+ * MediaPlayer.create Has Two Parameters
+ * @param context > [e.g: Informations.this] This Activity
+ * @param The method From Word Class to get the audio by using words to get item by position
+ */
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /**
+                 * Toast Show message on screen when item is clicked & (position +1) because position starts from 0 & [It's Optional]
+                 * Has Three Parameters
+                 * @param context > [e.g: Informations.this] This Activity
+                 * @param Text> Show Text and can get position of items by  [+ Position ]
+                 * @param Toast.LENGTH_SHORT [Still on screen 2 sec]  Or Toast.LENGTH_LONG [Still on screen 3.5 sec]
+                 */
+                Toast.makeText(Informations.this, "No Audio ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Use setAdapter to send the list of items to the ListView to display it
+        listView.setAdapter(adapter);
+    }
+
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+Word.java:
+
+package com.example.android.azkar;
+
+public class Word {
+    /**
+     * When you get Id of image it will return int
+     */
+    private String number;
+    private String talking;
+    private int imageResourceId;
+    private int audioResourceId;
+
+    //Constructor for If There's no audio
+    public Word(String Number, String Talking, int ImageResourceId) {
+        number = Number;
+        talking = Talking;
+        imageResourceId = ImageResourceId;
+    }
+
+    public Word(String Number, String Talking, int ImageResourceId, int AudioResourceId) {
+        number = Number;
+        talking = Talking;
+        imageResourceId = ImageResourceId;
+        audioResourceId = AudioResourceId;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getTalking() {
+        return talking;
+    }
+
+    public int getImageResourceId() {
+        return imageResourceId;
+    }
+
+    public int getAudioResourceId() {
+        return audioResourceId;
+    }
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+WordAdapter.java:
+
+package com.example.android.azkar;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+/**
+ * WordAdapter extends ArrayAdapter<Word> to allows the getView
+ */
+
+public class WordAdapter extends ArrayAdapter<Word> {
+    public WordAdapter(Context context, ArrayList<Word> words) {
+        // super of ArrayAdapter
+        super(context, 0, words);
+    }
+
+    /**
+     * From Code > Override Method > getView  Or [Ctrl + O] > getView
+     *
+     * @param position    Get the position of elements
+     * @param convertView Allows to reuse the view to save the size of memory
+     * @param parent      Make ListView parent itself
+     * @return The View when all is done
+     */
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        /**
+         * Make convert as a View
+         * Check if this View is null..[At the first time will be null]
+         * Make New View by [R.layout.foralltext] this Layout include the texts & image
+         * parent > ListView
+         * false > No need to make ListView.. I Created one
+         */
+        View convert = convertView;
+        if (convert == null)
+            convert = LayoutInflater.from(getContext()).inflate(R.layout.foralltext, parent, false);
+        // Make currentWord as Word Class to getItem by Position
+        Word currentWord = getItem(position);
+        // Don't Forget to add [convert.] before [findViewById(R.id.text1)] to allow this Id to the new View
+        TextView NumberText = (TextView) convert.findViewById(R.id.text1);
+        // [currentWord.getNumber()] Get this method from Word Class to set the text
+        NumberText.setText(currentWord.getNumber());
+
+
+        TextView TalkingText = (TextView) convert.findViewById(R.id.text2);
+        TalkingText.setText(currentWord.getTalking());
+
+        ImageView Image = (ImageView) convert.findViewById(R.id.image_icon);
+        Image.setImageResource(currentWord.getImageResourceId());
+
+        return convert;
+
+    }
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+Style:
+
+    <style name="StyleForAll">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">casual</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+--------------------------------------------------------------------------------------------------------------------------
+manifests:
+
+        <activity
+            android:name=".AzkarElSbah"
+            android:label="ÃÐßÇÑ ÇáÕÈÇÍ" />
+
+        <activity
+            android:name=".AzkarElMsaa"
+            android:label="ÃÐßÇÑ ÇáãÓÇÁ" />
+        <activity
+            android:name=".Ahadeeth"
+            android:label="ÃÍÇÏíË Úä ÇáÑÓæá (Õ)" />
+        <activity
+            android:name=".Informations"
+            android:label="ãÚáæãÇÊ Úä ãäÝÐ ÇáÈÑäÇãÌ">
+
+        </activity>

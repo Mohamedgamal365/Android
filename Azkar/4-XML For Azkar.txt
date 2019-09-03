@@ -1,0 +1,134 @@
+3 XML: 
+activity_main.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dreamwalker"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/First"
+        style="@style/StyleForAll"
+        android:text="ÃÐßÇÑ ÇáÕÈÇÍ" />
+
+
+    <TextView
+        android:id="@+id/Second"
+        style="@style/StyleForAll"
+        android:text="ÃÐßÇÑ ÇáãÓÇÁ" />
+
+    <TextView
+        android:id="@+id/Third"
+        style="@style/StyleForAll"
+        android:text="ÃÍÇÏíË Úä ÇáÑÓæá (Õ)" />
+
+    <TextView
+        android:id="@+id/Fourth"
+        style="@style/StyleForAll"
+        android:text="ãÚáæãÇÊ Úä ãäÝÐ ÇáÈÑäÇãÌ" />
+
+</LinearLayout>
+
+--------------------------------------------------------------------------------------------------------------------------
+forlistview.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+-ListView allows with ArrayList & ArrayAdapter
+-To Make List Of Item
+- Less Memory than LinearLayout
+-->
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/dreamwalker">
+
+</ListView>
+
+--------------------------------------------------------------------------------------------------------------------------
+foralltext.xml:
+
+<?xml version="1.0" encoding="utf-8"?><!--
+-Nested to allows Horizontal & Virtecal
+-Change Texts & Image all the time by ArrayAdapter
+Each time this elements have own atrributes so don't need to add backgroud if it not like together [e.g: Color]
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="50dp"
+    android:padding="5dp">
+
+
+    <ImageView
+        android:id="@+id/image_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>
+
+--------------------------------------------------------------------------------------------------------------------------
+Style:
+
+    <style name="StyleForAll">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">casual</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+--------------------------------------------------------------------------------------------------------------------------
+manifests:
+
+        <activity
+            android:name=".AzkarElSbah"
+            android:label="ÃÐßÇÑ ÇáÕÈÇÍ" />
+
+        <activity
+            android:name=".AzkarElMsaa"
+            android:label="ÃÐßÇÑ ÇáãÓÇÁ" />
+        <activity
+            android:name=".Ahadeeth"
+            android:label="ÃÍÇÏíË Úä ÇáÑÓæá (Õ)" />
+        <activity
+            android:name=".Informations"
+            android:label="ãÚáæãÇÊ Úä ãäÝÐ ÇáÈÑäÇãÌ">
+
+        </activity>
